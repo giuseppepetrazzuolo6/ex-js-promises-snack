@@ -3,7 +3,7 @@ Ottieni il titolo di un post con una Promise.
 Crea una funzione getPostTitle(id) che accetta un id e restituisce una Promise
 che recupera il titolo di un post dal link https://dummyjson.com/posts/{id}*/
 
-function getPostTitle(id) {
+/*function getPostTitle(id) {
     return new Promise((resolve, reject) => {
         fetch(`https://dummyjson.com/posts/${id}`)
             .then(resp => resp.json())
@@ -23,14 +23,14 @@ getPostTitle(2)
 
 getPostTitle(3)
     .then(result => console.log(result))
-    .catch(err => console.error(err))
+    .catch(err => console.error(err))*/
 
 /*🎯 Bonus: Ottieni l'intero post con l'autore
 Crea una funzione getPost(id) che recupera l'intero post. 
 Concatena una seconda chiamata che aggiunge una proprietà user che contiene i dati dell'autore, 
 recuperati dalla chiamata https://dummyjson.com/users/{post.userId}.*/
 
-function getPostId(id) {
+/*function getPost(id) {
     return new Promise((resolve, reject) => {
         fetch(`https://dummyjson.com/posts/${id}`)
             .then(resp => resp.json())
@@ -47,16 +47,16 @@ function getPostId(id) {
     })
 }
 
-getPostId(5)
+getPost(5)
     .then(result => console.log(result))
-    .catch(err => console.error(err))
+    .catch(err => console.error(err))*/
 
 /*🏆 Snack 2
 Crea la funzione lanciaDado() che restituisce una Promise che, dopo 3 secondi, 
 genera un numero casuale tra 1 e 6. Tuttavia, nel 20% dei casi, il dado si "incastra" e 
 la Promise va in reject.*/
 
-function lanciaDado() {
+/*function lanciaDado() {
     return new Promise((resolve, reject) => {
         console.log('sto lanciando il dado...')
         setTimeout(() => {
@@ -73,9 +73,45 @@ function lanciaDado() {
 
 lanciaDado()
     .then(result => console.log('il dado ha lanciato:', result))
-    .catch(err => console.error(err));
+    .catch(err => console.error(err));*/
 
 
 /*🎯 Bonus: HOF con closure per memorizzare l'ultimo lancio
-Modifica la funzione in creaLanciaDado(), che restituisce una closure che memorizza l'ultimo risultato. 
+Modifica la funzione in creaLanciaDado(), 
+che restituisce una closure che memorizza l'ultimo risultato. 
 Se il numero esce due volte di fila, stampa "Incredibile!"*/
+
+function creaLanciaDado() {
+    let ultimoRisultato = null;
+
+    return function () {
+        return new Promise((resolve, reject) => {
+            console.log('sto lanciando il dado...');
+            setTimeout(() => {
+                const incastrato = Math.random() < 0.2;
+                if (incastrato) {
+                    ultimoRisultato = null;
+                    reject('il dado si è incastrato, riprova.');
+                } else {
+                    const risultato = Math.floor(Math.random() * 6) + 1;
+
+                    if (risultato === ultimoRisultato) {
+                        console.log('Incredibile!');
+                    }
+                    ultimoRisultato = risultato;
+                    resolve(risultato);
+                }
+            }, 3000);
+        });
+    };
+}
+
+const lanciaIlDado = creaLanciaDado()
+
+lanciaIlDado()
+    .then(r => console.log('risultato:', r))
+    .catch(err => console.error(err));
+
+lanciaIlDado()
+    .then(r => console.log('risultato:', r))
+    .catch(err => console.error(err));
